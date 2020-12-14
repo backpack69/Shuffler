@@ -1,0 +1,135 @@
+using System;
+using System.Collections.Generic;
+using System.IO;
+
+namespace Shuffle
+{
+    public class Shuffler
+    {
+        public List<string> leftrifflepile = new List<string>();
+        public List<string> rightrifflepile = new List<string>();
+        public List<string> shuffleddeck = new List<string>();
+        public List<string> deck = new List<string>();
+
+        public void Seperate (List<string> deck)
+        {
+            var deckindex = deck.Count;
+            for (var index = 0; index < deckindex; index += 1)
+            {
+                if(index < deckindex/2)
+                {
+                    leftrifflepile.Add(deck[0]);
+                    deck.RemoveAt(0);
+                }
+                else
+                {
+                    rightrifflepile.Add(deck[0]);
+                    deck.RemoveAt(0);
+                }
+            }
+        }
+
+        public void Riffle(List<string> leftrifflepile, List<string>rightrifflepile)
+        {
+            Random rnd = new Random();
+            var riffleindex = leftrifflepile.Count + rightrifflepile.Count;
+
+            for (var index = 0; index < riffleindex; index += 1)
+            {
+                var number = rnd.Next(0, 2);
+                if(leftrifflepile.Count == 0 && rightrifflepile.Count == 0)
+                {
+                    break;
+                }
+
+                if(leftrifflepile.Count == 0)
+                {
+                    number = 1;
+                }
+                if(rightrifflepile.Count == 0)
+                {
+                    number = 0;
+                }
+
+                if (number == 0 && leftrifflepile.Count >0)
+                {
+                    shuffleddeck.Add(leftrifflepile[0]);
+                    leftrifflepile.RemoveAt(0);
+                }
+
+                else if (number == 1 && rightrifflepile.Count > 0)
+                {
+                    shuffleddeck.Add(rightrifflepile[0]);
+                    rightrifflepile.RemoveAt(0);
+                }
+            }
+        }
+        public void PerfectRiffle(List<string> leftrifflepile, List<string>rightrifflepile)
+        {
+            
+            for(var index = 0; index < leftrifflepile.Count + rightrifflepile.Count; index += 1)
+            {
+                if (leftrifflepile[index] == null && rightrifflepile[index] == null)
+                {
+                    break;
+                }
+
+                else if (leftrifflepile[index] != null && rightrifflepile[index] != null)
+                {
+                    shuffleddeck.Add(rightrifflepile[index]);
+                    shuffleddeck.Add(leftrifflepile[index]);
+                }
+
+                else if (leftrifflepile[index] != null && rightrifflepile[index] ==null)
+                {
+                    shuffleddeck.Add(leftrifflepile[index]);
+                }
+
+                else if (leftrifflepile[index] == null && rightrifflepile[index] != null)
+                {
+                    shuffleddeck.Add(rightrifflepile[index]);
+                }
+            }
+        }
+        
+        static void Main(string[] args)
+        {
+            Shuffler shuffler = new Shuffler();
+            var rnd = new Random();
+
+            using (var reader = File.OpenText(@"C:\Users\Nicholas\Desktop\nic shuffle\Shuffle\Deck\deck.txt"))
+            {
+
+                var line = reader.ReadLine();
+                while (line != null)
+                {
+                    shuffler.deck.Add(line);
+                    // Console.WriteLine(line);
+                    line = reader.ReadLine();
+                }
+            }
+            for (var index = rnd.Next(7,16); index > 0; index -=1)
+            {
+                shuffler.Seperate(shuffler.deck);
+
+                shuffler.Riffle(shuffler.leftrifflepile, shuffler.rightrifflepile);
+
+                for (var booty = 0; booty < shuffler.shuffleddeck.Count; booty += 1)
+                {
+                    shuffler.deck.Add(shuffler.shuffleddeck[booty]);
+                }
+
+                shuffler.shuffleddeck.Clear();
+            }
+
+            // Console.WriteLine(shuffler.rightrifflepile[0]);
+            // Console.WriteLine(shuffler.leftrifflepile[0]);
+            for(var index = 0; index < shuffler.deck.Count; index += 1)
+            {
+                Console.WriteLine(shuffler.deck[index]);
+            }
+
+
+        }
+    }
+}
