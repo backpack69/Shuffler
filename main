@@ -14,7 +14,7 @@ namespace Shuffle
         public void Seperate (List<string> deck)
         {
             var deckindex = deck.Count;
-            for (var index = 0; index < deckindex; ++index)
+            for (var index = 0; index < deckindex; index += 1)
             {
                 if(index < deckindex/2)
                 {
