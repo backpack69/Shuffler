@@ -6,9 +6,9 @@ namespace Shuffle
 {
     public class Shuffler
     {
-        public List<string> leftrifflepile = new List<string>();
-        public List<string> rightrifflepile = new List<string>();
-        public List<string> shuffleddeck = new List<string>();
+        private List<string> leftRifflePile = new List<string>();
+        private List<string> rightRifflePile = new List<string>();
+        public List<string> shuffledDeck = new List<string>();
         public List<string> deck = new List<string>();
 
         public void Seperate (List<string> deck)
@@ -18,49 +18,49 @@ namespace Shuffle
             {
                 if(index < deckindex/2)
                 {
-                    leftrifflepile.Add(deck[0]);
+                    leftRifflePile.Add(deck[0]);
                     deck.RemoveAt(0);
                 }
                 else
                 {
-                    rightrifflepile.Add(deck[0]);
+                    rightRifflePile.Add(deck[0]);
                     deck.RemoveAt(0);
                 }
             }
         }
 
-        public void Riffle(List<string> leftrifflepile, List<string>rightrifflepile)
+        public void Riffle(List<string> leftRifflePile, List<string>rightRifflePile)
         {
             Random rnd = new Random();
-            var riffleindex = leftrifflepile.Count + rightrifflepile.Count;
+            var riffleindex = leftRifflePile.Count + rightRifflePile.Count;
 
             for (var index = 0; index < riffleindex; index += 1)
             {
                 var number = rnd.Next(0, 2);
-                if(leftrifflepile.Count == 0 && rightrifflepile.Count == 0)
+                if(leftRifflePile.Count == 0 && rightRifflePile.Count == 0)
                 {
                     break;
                 }
 
-                if(leftrifflepile.Count == 0)
+                if(leftRifflePile.Count == 0)
                 {
                     number = 1;
                 }
-                if(rightrifflepile.Count == 0)
+                else if(rightRifflePile.Count == 0)
                 {
                     number = 0;
                 }
 
-                if (number == 0 && leftrifflepile.Count >0)
+                if (number == 0)
                 {
-                    shuffleddeck.Add(leftrifflepile[0]);
-                    leftrifflepile.RemoveAt(0);
+                    shuffledDeck.Add(leftRifflePile[0]);
+                    leftRifflePile.RemoveAt(0);
                 }
 
-                else if (number == 1 && rightrifflepile.Count > 0)
+                else if (number == 1)
                 {
-                    shuffleddeck.Add(rightrifflepile[0]);
-                    rightrifflepile.RemoveAt(0);
+                    shuffledDeck.Add(rightRifflePile[0]);
+                    rightRifflePile.RemoveAt(0);
                 }
             }
         }
@@ -76,18 +76,18 @@ namespace Shuffle
 
                 else if (leftrifflepile[index] != null && rightrifflepile[index] != null)
                 {
-                    shuffleddeck.Add(rightrifflepile[index]);
-                    shuffleddeck.Add(leftrifflepile[index]);
+                    shuffledDeck.Add(rightrifflepile[index]);
+                    shuffledDeck.Add(leftrifflepile[index]);
                 }
 
                 else if (leftrifflepile[index] != null && rightrifflepile[index] ==null)
                 {
-                    shuffleddeck.Add(leftrifflepile[index]);
+                    shuffledDeck.Add(leftrifflepile[index]);
                 }
 
                 else if (leftrifflepile[index] == null && rightrifflepile[index] != null)
                 {
-                    shuffleddeck.Add(rightrifflepile[index]);
+                    shuffledDeck.Add(rightrifflepile[index]);
                 }
             }
         }
@@ -108,27 +108,29 @@ namespace Shuffle
                     line = reader.ReadLine();
                 }
             }
-            for (var index = rnd.Next(7,16); index > 0; index -=1)
+            for (var index = rnd.Next(50,100); index > 0; index -=1)
             {
                 shuffler.Seperate(shuffler.deck);
 
-                shuffler.Riffle(shuffler.leftrifflepile, shuffler.rightrifflepile);
+                shuffler.Riffle(shuffler.leftRifflePile, shuffler.rightRifflePile);
 
-                for (var booty = 0; booty < shuffler.shuffleddeck.Count; booty += 1)
+                for (var i = 0; i < shuffler.shuffledDeck.Count; i += 1)
                 {
-                    shuffler.deck.Add(shuffler.shuffleddeck[booty]);
+                    shuffler.deck.Add(shuffler.shuffledDeck[i]);
                 }
 
-                shuffler.shuffleddeck.Clear();
+                shuffler.shuffledDeck.Clear();
             }
 
             // Console.WriteLine(shuffler.rightrifflepile[0]);
             // Console.WriteLine(shuffler.leftrifflepile[0]);
-            for(var index = 0; index < shuffler.deck.Count; index += 1)
+            using (var writer = File.CreateText(@"C:\Users\Nicholas\Desktop\nic shuffle\Shuffle\Deck\deck.txt"))
             {
-                Console.WriteLine(shuffler.deck[index]);
+                for(var index = 0; index <shuffler.deck.Count; index += 1)
+                {
+                    writer.WriteLine(shuffler.deck[index]);
+                }
             }
-
 
         }
     }
